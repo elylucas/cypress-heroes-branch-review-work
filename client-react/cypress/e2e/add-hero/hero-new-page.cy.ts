@@ -36,7 +36,7 @@ describe('hero new page', () => {
       cy.get('@heroCard')
         .find('[data-cy=name]')
         .should('contain', 'New Test Hero');
-      cy.get('@heroCard').find('[data-cy=price]').should('contain', '12');
+      cy.get('@heroCard').find('[data-cy=price]').should('contain', '12a');
       cy.get('@heroCard').find('[data-cy=fans]').should('contain', '34');
       cy.get('@heroCard').find('[data-cy=saves]').should('contain', '56');
       cy.get('@heroCard')
@@ -47,6 +47,27 @@ describe('hero new page', () => {
     });
 
     it('should be able to upload new avatar', () => {
+      cy.get('[data-cy=nameInput]').type('New Test Hero');
+      cy.get('[data-cy=priceInput]').clear().type('12');
+      cy.get('[data-cy=fansInput]').clear().type('34');
+      cy.get('[data-cy=savesInput]').clear().type('56');
+      cy.get('[data-cy=powersSelect]').select(['Fireball', 'Super Strength']);
+      cy.get('[data-cy=avatarFile]').selectFile(
+        './cypress/fixtures/avatar.jpg'
+      );
+      cy.get('button').contains('Submit').click();
+      cy.location('pathname').should('equal', `/heroes`);
+      cy.get('@request').then((req: any) => {
+        cy.contains('[data-cy=hero-card]', 'New Test Hero')
+          .as('heroCard')
+          .find('img')
+          .should('have.attr', 'src')
+          .and('include', `heroes/${req.response.body.id}/avatar`);
+      });
+    });
+    
+
+    it('should be able to remove avatar', () => {
       cy.get('[data-cy=nameInput]').type('New Test Hero');
       cy.get('[data-cy=priceInput]').clear().type('12');
       cy.get('[data-cy=fansInput]').clear().type('34');
