@@ -1,12 +1,14 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress';
 import { createHero, deleteHero } from './cypress/support/data';
+import fs from 'fs';
 
 export default defineConfig({
-  projectId: 'tzc8kr',
+  projectId: '2grnur',
   e2e: {
+    video: true,
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on, config) {
-      on('task', {
+      on('task', {  
         createHero,
         deleteHero,
       });
